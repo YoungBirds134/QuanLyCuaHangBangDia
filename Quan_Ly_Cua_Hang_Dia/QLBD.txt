@@ -1,0 +1,162 @@
+
+--========== TẠO DATABASE  ==========--
+CREATE DATABASE QUANLYBANGDIA
+GO
+
+USE QUANLYBANGDIA
+GO
+
+--========== TẠO BẢNG ==========--
+
+
+
+CREATE TABLE KHACHHANG
+(
+    MAKH     VARCHAR(10) NOT NULL,
+
+    HOTEN     NVARCHAR(50) NOT NULL,
+    DIENTHOAI VARCHAR(20),
+    DIACHI    NVARCHAR(100),
+    GIOITINH  INT          NOT NULL,
+	Username nvarchar(50),
+	Pass nvarchar(50),
+
+    CONSTRAINT KHACHHANG_PK PRIMARY KEY (MAKH),
+    
+)
+GO
+
+CREATE TABLE NHANVIEN
+(
+    MANV VARCHAR(10) NOT NULL,
+   CMND      VARCHAR(20)  NOT NULL,
+    HOTEN     NVARCHAR(50) NOT NULL,
+    DIENTHOAI VARCHAR(20),
+    DIACHI    NVARCHAR(100),
+    GIOITINH  INT          NOT NULL,
+    NGAYSINH  DATE,
+    CONSTRAINT NHANVIEN_PK PRIMARY KEY (MANV),
+  
+)
+GO
+
+CREATE TABLE TAIKHOAN
+(
+    TENTAIKHOAN VARCHAR(30)   NOT NULL,
+    MATKHAU     NVARCHAR(128) NOT NULL,
+    LOAITK      SMALLINT      NOT NULL,
+    MANV        VARCHAR(10)   NOT NULL,
+    CONSTRAINT TAIKHOAN_PK PRIMARY KEY (TENTAIKHOAN),
+    CONSTRAINT TAIKHOAN_FK_NHANVIEN FOREIGN KEY (MANV) REFERENCES NHANVIEN (MANV) ON DELETE CASCADE
+)
+GO
+create table HANGSANXUAT(
+MaHANGSANXUAT int primary key not null,
+TenHANGSANXUAT nvarchar(50)
+)
+go
+create table TheLoai(
+MaTheLoai int primary key not null,
+TenTheLoai nvarchar(50)
+)
+go
+CREATE TABLE BANGDIA
+(
+    MABD        NVARCHAR(10) NOT NULL,
+    TENBD       NVARCHAR(50) NOT NULL,
+    HANGSANXUAT int NOT NULL,
+    GHICHU      NVARCHAR(100),
+    DONGIA      MONEY        NOT NULL,
+    TINHTRANG   INT,
+    ma_THELOAI_Bang_Dia     int NOT NULL,
+    SOLUONGTON  INT          NOT NULL,
+	HINH NVARCHAR(50),
+    CONSTRAINT BANGDIA_PK PRIMARY KEY (MABD),
+    CONSTRAINT BANGDIA_CK_TINHTRANG CHECK (TINHTRANG IN (0, 1)),
+	FOREIGN KEY (ma_THELOAI_Bang_Dia) REFERENCES TheLoai(MaTheLoai),
+	FOREIGN KEY (HANGSANXUAT) REFERENCES  HANGSANXUAT(MaHANGSANXUAT),
+)
+GO
+
+
+CREATE TABLE HOADON
+(
+    MAHD    VARCHAR(10) NOT NULL,
+    NGAYLAP DATE,
+    MAKH    VARCHAR(10) NOT NULL,
+    CONSTRAINT HOADON_PK PRIMARY KEY (MAHD),
+    CONSTRAINT HOADON_FK_KHACHHANG FOREIGN KEY(MAKH) REFERENCES KHACHHANG (MAKH)
+)
+GO
+
+CREATE TABLE CHITIETHOADON
+(
+    MAHD           VARCHAR(10)  NOT NULL,
+    MABD           NVARCHAR(10) NOT NULL,
+    SONGAYDUOCMUON INT          NOT NULL,
+    SOLUONG        INT          NOT NULL,
+    TINHTRANG      INT          NOT NULL,
+    CONSTRAINT CHITIETHOADON_PK PRIMARY KEY (MAHD),
+    CONSTRAINT CHITIETHOADON_FK_BANGDIA FOREIGN KEY (MABD) REFERENCES BANGDIA(MABD),
+    CONSTRAINT CHITIETHOADON_FK_HOADON FOREIGN KEY (MAHD) REFERENCES HOADON (MAHD) ON DELETE CASCADE
+)
+GO
+
+
+ALTER TABLE BANGDIA
+    ADD CONSTRAINT BANGDIA_DF_TINHTRANG DEFAULT 1 FOR TINHTRANG
+GO
+
+ALTER TABLE HOADON
+    ADD CONSTRAINT HOADON_DF_NGAYLAP DEFAULT GETDATE() FOR NGAYLAP
+GO
+
+
+
+
+
+
+
+-----//-----------------------------------------//
+iNSERT INTO TheLoai
+VALUES(1,N'Ca Nhạc'),
+	  (2,N'Hài'),
+	  (3,N'Kinh Dị'),
+	  (4,N'Hành Động'),
+	  (5,N'Tâm Lý'),
+	  (6,N'Phiêu Lưu'),
+	  (7,N'Sử Thi'),
+	  (8,N'Hình Sự')
+	  --------
+	  insert into HANGSANXUAT
+	  values(1,N'Bến Thành Audio'),
+			(2,N'Đức Tuấn Audio'),
+			(3,N'Galaxy'),
+			(4,N'Phonix'),
+			(5,N'Journey Flim'),
+			(6,N'Chairly Nguyễn Flim'),
+			(7,N'Korea Flim'),
+			(8,N'Sài Gòn Audio')
+			
+--------
+INSERT INTO BANGDIA 
+VALUES(1,N'Ánh Trăng Rước Đèn Trung Thu',1,NULL,100000,0,1,100,N'1.jpg'),
+	  (2,N'Bài Ca Không Quên',2,NULL,100000,0,1,100,N'5.jpg'),
+	  (3,N'49 Ngày 2',3,NULL,95000,0,2,100,N'12.jpg'),
+	  (4,N'Chúc Xuân 2011',8,NULL,120000,0,1,100,N'13.jpg'),
+	  (5,N'Chúc Xuân 99"',8,NULL,120000,0,1,100,N'14.jpg'),
+	  (6,N'US',4,NULL,55000,0,3,100,N'42.jpg'),
+	  (7,N'Bụi Đời Chợ Lớn',6,NULL,130000,0,4,100,N'43.jpg'),
+	  (8,N'Mắt Trợn',3,NULL,85000,0,5,100,N'44.jpg'),
+	  (9,N'Cua Lại Vợ Bầu',3,NULL,85000,0,5,100,N'45.jpg'),
+	  (10,N'Joker',4,NULL,85000,0,5,100,N'46.jpg'),
+	  (11,N'Trạng Quỳnh',3,NULL,85000,0,2,100,N',2.jpg'),
+	  (12,N'Lôi Báo',4,NULL,85000,0,4,100,N'3.jpg'),
+	  (13,N'Haryy Poster 1',5,NULL,95000,0,6,100,N'9.jpg'),
+	  (14,N'Thiên Mệnh Anh Hùng',6,NULL,45000,0,7,100,N'15.jpg'),
+	  (15,N'Conan',3,NULL,75000,0,7,100,N'31.jpg'),
+	  (16,N'Tinker Tailor Sodiler SPY',4,NULL,110000,0,8,100,N'16.jpg'),
+	  (17,N'Sát Thủ Vô Cùng Cực',7,NULL,55000,0,8,100,N'17.jpg'),
+	  (18,N'Tế Xác',2,NULL,65000,0,3,100,N'28.jpg'),
+	  (19,N'Harry Poster 5',5,NULL,55000,0,6,100,N'32.jpg'),
+	  (20,N'X-men Ngày Cuối Tận Thế',4,NULL,75000,0,4,100,N'29.jpg')

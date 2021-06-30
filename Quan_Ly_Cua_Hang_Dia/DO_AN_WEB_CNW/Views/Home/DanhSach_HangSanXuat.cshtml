@@ -1,0 +1,12 @@
+﻿@using DO_AN_WEB_CNW.Models;
+@model List<HANGSANXUAT>
+<ul class="nav flex-column">
+    @foreach (HANGSANXUAT item in @Model)
+    {
+        <li class="nav-item border">
+            @Html.ActionLink(@item.TenHANGSANXUAT, "Hien_Thi_DS_Hang_San_Xuat", "Home", new { id=item.MaHANGSANXUAT}, new { @class = "nav-link" })
+
+         @*   @item.TenTheLoai;*@
+        </li>
+    }
+</ul>
